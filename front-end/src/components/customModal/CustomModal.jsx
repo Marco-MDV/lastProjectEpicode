@@ -34,7 +34,7 @@ export default function CustomModal({ showModal, setShowModal, setMyCards, userI
     };
 
     const handleKeyDown = (e) => {
-        if (['e', '+', '-'].includes(e.key)) {
+        if (["e", "+", "-",",","."].includes(e.key)) {
             e.preventDefault();
         }
     };

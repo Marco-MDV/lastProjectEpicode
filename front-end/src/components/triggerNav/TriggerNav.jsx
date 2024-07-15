@@ -8,9 +8,11 @@ export default function TriggerNav({ seeNav }) {
         document.querySelector('#myNav').classList.add('animate-swiperRight')
         document.querySelector('#TriggerNav').classList.remove('animate-inverseSwiperLeft')
         document.querySelector('#TriggerNav').classList.add('animate-inverseSwiperRight')
+        document.querySelector('#bgNav').classList.remove('z-[-1]', 'opacity-0')
+        document.querySelector('#bgNav').classList.add('z-[3]', 'opacity-100')
     }
     return (
-        <button className={`${darkMode?'dark':''} fixed top-4 right-4 z-10 border-2 shadow-2xl hover:bg-slate-400 rounded-md p-2`} onClick={() => { custoClick(); seeNav() }} id='TriggerNav' >
+        <button className={`${darkMode?'dark':''} fixed top-4 left-4 z-10 border-2 shadow-2xl hover:bg-slate-400 rounded-md p-2`} onClick={() => { custoClick(); seeNav() }} id='TriggerNav' >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 dark:text-white duration-800">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>

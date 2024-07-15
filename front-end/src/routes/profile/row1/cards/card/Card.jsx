@@ -13,7 +13,7 @@ export default function Card({ card, handleCardSelect, userId, cards, deleteCard
     const [err, setErr] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     return (
-        <div className=' relative w-full h-full flex justify-center items-center'>
+        <div className=' relative w-full h-full flex justify-center items-center p-20'>
             <div className='relative group p-4 rounded from-[#7949EE] to-[#46DEE6] bg-gradient-to-r text-white flex flex-col gap-8 min-w-[280px] md:min-w-[300px] shadow-xl m-10  md:m-0'>
                 <div className='flex gap-4'>
                     {

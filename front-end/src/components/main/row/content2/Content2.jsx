@@ -47,7 +47,9 @@ export default function Content2() {
         <SkeletonNews />
       )}
       {err && !loader && (
-        <Error status={404} message="Something went wrong, please try again later" />
+        <div className='col-span-2 flex justify-center items-center'>
+          <Error status={404} message="Something went wrong, please try again later" />
+        </div>
       )}
       <CounterOfUsers />
     </>

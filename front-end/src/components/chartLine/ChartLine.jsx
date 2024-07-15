@@ -7,7 +7,7 @@ import SkeletonChartLoade from '../skeletonChartLoade/SkeletonChartLoade';
 import ErrorChart from '../errors/ErrorChart';
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip)
 
-export default function ChartLine({ userData, statusAction, text, dataChart, hookSetDataChart }) {
+export default function ChartLine({ userData, statusAction, text, dataChart, hookSetDataChart , setDataCounter}) {
     const [loader, setLoader] = useState(true)
     const [err, setErr] = useState(false)
     const [errMessage, setErrMessage] = useState('')
@@ -24,9 +24,10 @@ export default function ChartLine({ userData, statusAction, text, dataChart, hoo
                 body: JSON.stringify({ Id: userData.userId, action: statusAction })
             })
             if (call.ok) {
-                const result = await call.json()
-                hookSetDataChart(result)
-                setLoader(false)
+                const result = await call.json();
+                setDataCounter(Object.values(result)[0])
+                hookSetDataChart(result);
+                setLoader(false);
             }
         } catch (error) {
             setLoader(false)

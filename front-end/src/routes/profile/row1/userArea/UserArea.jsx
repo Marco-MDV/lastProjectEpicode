@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import Skeleton from './skeleton/Skeleton'
 import Error from '../../../../components/error/Error'
@@ -6,8 +6,10 @@ import SpanComponent from '../../../../components/spanComponent/SpanComponent'
 import { useNavigate } from 'react-router-dom'
 import LoaderTableActions from '../../../../components/loaders/LoaderTableActions'
 import ErrorRegistration from '../../../../components/errors/ErrorRegistration'
+import Counter from '../counter/Counter'
+import PieChart from '../../../../components/pieChart/PieChart'
 
-export default function UserArea({ userData, setUserData }) {
+export default function UserArea({ userData, setUserData, dataRevenues, dataExpenditures }) {
   const navigate = useNavigate()
   const loader = useSelector((state) => state.loader.value)
   const err = useSelector((state) => state.error.value)
@@ -36,7 +38,7 @@ export default function UserArea({ userData, setUserData }) {
         setUserData({ ...userData, img: result.newImg })
         setLoaderImg(false)
         navigate(`/profile/${result.token}`)
-      }else{
+      } else {
         setLoaderImg(false)
         setErrImgMessage('Error upload img')
         setErrImg(true)
@@ -48,40 +50,57 @@ export default function UserArea({ userData, setUserData }) {
     }
   }
 
-
+  const [show, setShow] = useState(false)
+  useEffect(() => {
+    if (dataRevenues.length > 0 || dataRevenues.length > 0) {
+      setShow(true)
+    }
+  }, [dataRevenues, dataExpenditures])
   return (
     <>
       {!loader && !err && (
         <div className='col-span-2 flex flex-col justify-center md:justify-center items-center md:items-start gap-20 dark:text-white'>
-          <div className='relative w-[180px] h-[180px] shadow-inner-custom rounded-full flex justify-center items-center group'>
-            {!loaderImg && !errImg && (
-              <>
-                <figure className=' group-hover:blur-sm w-[150px] h-[150px]'>
-                  <img src={userData.img.imgUrl} alt={`img profile ${userData.Name}`} className='rounded-full w-full h-full object-cover' />
-                </figure>
-                <button className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 duration-800 flex flex-col justify-center items-center opacity-0 group-hover:opacity-100'>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
-                  </svg>
-                  <input type="file" className='w-full' accept="image/png" name="img" onChange={handlePhotoChange} />
-                </button>
-              </>
-            )}
-            {loaderImg && !errImg && (
-              <LoaderTableActions classCustom='rounded-full'/>
-            )}
-            {!loaderImg && errImg && (
-              <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-custom-gradient-history w-full h-full rounded-full'>
-                <ErrorRegistration message={errImgMessage}/>
-              </div>
-            )}
+          <div className='flex flex-col md:flex-row justify-between items-center w-full'>
+            <div className='relative w-[180px] h-[180px] shadow-inner-custom rounded-full flex justify-center items-center group'>
+              {!loaderImg && !errImg && (
+                <>
+                  <figure className=' group-hover:blur-sm w-[150px] h-[150px]'>
+                    <img src={userData.img.imgUrl} alt={`img profile ${userData.Name}`} className='rounded-full w-full h-full object-cover' />
+                  </figure>
+                  <button className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 duration-800 flex flex-col justify-center items-center opacity-0 group-hover:opacity-100'>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                    </svg>
+                    <input type="file" className='w-full' accept="image/png" name="img" onChange={handlePhotoChange} />
+                  </button>
+                </>
+              )}
+              {loaderImg && !errImg && (
+                <LoaderTableActions classCustom='rounded-full' />
+              )}
+              {!loaderImg && errImg && (
+                <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-custom-gradient-history w-full h-full rounded-full'>
+                  <ErrorRegistration message={errImgMessage} />
+                </div>
+              )}
+            </div>
+
+            <ul className=' text-xl dark:bg-slate-700 dark:text-white dark:customTransiption bg-white shadow-2xl p-7 rounded'>
+              <li><SpanComponent text='Name:' /> {userData.Name}</li>
+              <li><SpanComponent text='Email:' /> {userData.Email}</li>
+              <li><SpanComponent text='Role:' /> {userData.role}</li>
+            </ul>
           </div>
 
-          <ul className=' text-xl dark:bg-slate-700 dark:text-white dark:customTransiption bg-white shadow-2xl p-7 rounded'>
-            <li><SpanComponent text='Name:' /> {userData.Name}</li>
-            <li><SpanComponent text='Email:' /> {userData.Email}</li>
-            <li><SpanComponent text='Role:' /> {userData.role}</li>
-          </ul>
+          {show && (
+            <div className='flex flex-col md:flex-row p-3 items-center  justify-between w-full'>
+              <div className='flex items-center justify-evenly w-full'>
+                <Counter statusAction='valuesRevenue' dataCounter={dataRevenues} />
+                <Counter statusAction='exitsValue' dataCounter={dataExpenditures} />
+              </div>
+              <PieChart dataRevenues={dataRevenues} dataExpenditures={dataExpenditures} />
+            </div>
+          )}
         </div>
       )}
       {loader && !err && (<Skeleton />)}

@@ -75,7 +75,7 @@ export default function Btc() {
                 ])
                 setValue(prevValue => [
                     ...prevValue,
-                    Number(coin.data.priceUsd)
+                    Number(coin.data?.priceUsd)
                 ])
             } catch (error) {
                 console.log(error);

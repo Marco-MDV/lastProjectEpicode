@@ -1,11 +1,18 @@
 import React, { useState } from 'react'
 import SpanComponent from '../spanComponent/SpanComponent'
+import LoaderTableActions from '../loaders/LoaderTableActions';
 
-export default function Additions({ cardSelected, value, seeCardSelected, addNewData }) {
+export default function Additions({ cardSelected, value, seeCardSelected, addNewData, setDataCounter, dataCounter }) {
+    const handleKeyDown = (e) => {
+        if (["e", "+", "-", ",", "."].includes(e.key)) {
+            e.preventDefault();
+        }
+    };
+
     const [data, setData] = useState({
-        [value]:'',
-        date:'',
-        description:''
+        [value]: '',
+        date: '',
+        description: ''
     })
     const hookSetData = (e) => {
         setData({
@@ -23,15 +30,20 @@ export default function Additions({ cardSelected, value, seeCardSelected, addNew
         setAlert(!alert)
     }
 
+    const [loader, setLoader] = useState(false)
+    const [err, setErr] = useState(false)
+
     const [message, setMessage] = useState('')
+
     const uploadData = async () => {
         if (cardSelected === '') {
             setWarning(true)
             setMessage('Please select a card')
-        }else if(data.date === '' || data.description === '' || data?.[value] === ''){
+        } else if (data.date === '' || data.description === '' || data?.[value] === '') {
             changeAlert()
             setMessage('Fill all fields')
         } else {
+            setLoader(true)
             try {
                 const call = await fetch(`${process.env.REACT_APP_ENDPOINT_BACKEND}/add`, {
                     method: 'POST',
@@ -43,17 +55,34 @@ export default function Additions({ cardSelected, value, seeCardSelected, addNew
                 })
                 if (call.ok) {
                     const result = await call.json()
-                    addNewData({date: data.date, value:data?.[value]})
+                    addNewData({ date: data.date, value: data?.[value] })
+                    setDataCounter([
+                        ...dataCounter,
+                        Number(data?.[value])
+                    ])
+                    setLoader(false)
+                }else{
+                    setLoader(false)
+                    setMessage('Failed to add new data')
+                    setErr(true)
                 }
             } catch (error) {
+                setLoader(false)
                 console.log(error.message);
+                setMessage(error.message)
+                setErr(true)
             }
         }
     }
 
     const slicePan = seeCardSelected?.cardNumber.split(/(.{4})/).filter(Boolean);
 
-    
+
+    const changeAlertFatch=() => {
+        setLoader(false)
+        setErr(false)
+    }
+
     return (
         <div className='col-1 flex flex-col justify-center items-center bg-slate-300 shadow-2xl rounded-md p-10 mb-10 lg:mb-0'>
             {seeCardSelected?.state && (<div className='flex flex-col justify-center items-center pb-5 w-full'><SpanComponent text='Card seleceted: ' /> <p className='flex gap-3'>{slicePan.map((slice, i) =>
@@ -64,7 +93,7 @@ export default function Additions({ cardSelected, value, seeCardSelected, addNew
                     <div className='flex flex-wrap flex-row w-full justify-between items-center gap-10 p-5'>
                         <label className=''>
                             <p className='text-bold text-2xl'><SpanComponent text='Value:' /></p>
-                            <input type="number" name={value} placeholder='insert a number value' className='p-2 rounded w-full' onChange={hookSetData} />
+                            <input type="number" name={value} placeholder='insert a number value' className='p-2 rounded w-full' onKeyDown={handleKeyDown} onChange={hookSetData} />
                         </label>
                         <label className=''>
                             <p className='text-bold text-2xl'><SpanComponent text='Date:' /></p>
@@ -103,6 +132,26 @@ export default function Additions({ cardSelected, value, seeCardSelected, addNew
                         </svg>
                     </button>
                 </div>
+                {loader && !err && (
+                    <LoaderTableActions classCustom=' z-10 ' />
+                )}
+                {!loader && err && (
+                    <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center items-center bg-custom-gradient-history w-full h-full z-[3]'>
+                        <div className={`z-30 opacity-1 duration-800 flex items-center justify-between text-sm text-blue-800 border-2 border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-2 min-w-[250px]`}>
+                            <div className='flex gap-3 items-center'>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-20">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                                </svg>
+                                <p>{message}</p>
+                            </div>
+                            <button onClick={changeAlertFatch}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     )

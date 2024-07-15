@@ -1,11 +1,21 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import TogglerModeButton from '../togglerModeButton/TogglerModeButton'
 
-export default function DownNav({handleLogout, token, headler}) {
+export default function DownNav({ handleLogout, token, headler }) {
+
+    const [see, setSee] = useState(true)
+  useEffect(() => {
+    if (token) {
+      setSee(false)
+    }else{
+      setSee(true)
+    }
+  }, [token])
+
     return (
         <div className='flex flex-col justify-between h-full'>
-            {token && (
+            {!see && (
                 <div className='w-full flex flex-col' id='logOut'>
                     <label className='border-t-2 border-t-black dark:border-t-white mt-3'></label>
                     <button className='flex gap-2 justify-center items-center dark:hover:bg-slate-900 hover:bg-slate-400 rounded-md w-full p-2 mt-1'>
@@ -20,7 +30,7 @@ export default function DownNav({handleLogout, token, headler}) {
                 <p>
                     Change mode:
                 </p>
-                <TogglerModeButton headler={headler}/>
+                <TogglerModeButton headler={headler} />
             </div>
         </div>
     )

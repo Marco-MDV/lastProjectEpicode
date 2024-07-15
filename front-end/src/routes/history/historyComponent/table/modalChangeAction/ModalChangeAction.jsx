@@ -8,7 +8,7 @@ export default function ModalChangeAction({ selectedRow, setSelectedRow, setData
   const see = useSelector((state) => state.seeModalChange.value)
   
   const handleKeyDown = (e) => {
-    if (["e", "+", "-"].includes(e.key)) {
+    if (["e", "+", "-",",","."].includes(e.key)) {
       e.preventDefault();
     }
   };

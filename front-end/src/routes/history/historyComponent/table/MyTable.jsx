@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import SpanComponent from '../../../../components/spanComponent/SpanComponent';
 import ModalChangeAction from './modalChangeAction/ModalChangeAction';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import LoaderTableActions from '../../../../components/loaders/LoaderTableActions';
 import ErrorRegistration from '../../../../components/errors/ErrorRegistration';
 import LoaderChart from '../../../../components/loaders/LoaderChart';
@@ -87,7 +86,6 @@ export default function MyTable({ typeData }) {
                     )}
                     {showValue && (
                         <div>
-                            <SpanComponent text={typeData} classCustom='text-3xl py-5' />
                             <div className={`${darkmode ? 'dark' : ''} w-full h-full text-left relative flex flex-col justify-center items-center`}>
                                 <TableComponent
                                     value={value}

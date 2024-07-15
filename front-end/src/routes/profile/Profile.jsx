@@ -30,6 +30,7 @@ export default function Profile({handleLogin}) {
         setUserData(result)
         localStorage.setItem('token: ', token)
         dispatch(setLoaderFalse(false))
+        handleLogin(token)
       }else{
         dispatch(setLoaderFalse(false))
         dispatch(setErrorTrue(true))
@@ -47,7 +48,6 @@ export default function Profile({handleLogin}) {
   }
   useEffect(()=>{
     decodeToken();
-    handleLogin(token)
   },[])
   const [cardSelected, setCardSeted] = useState('')
   const [seeCardSelected, setSeeCardSelected] = useState({cardNumber:'', state:false}) 
@@ -60,11 +60,19 @@ export default function Profile({handleLogin}) {
     const id = String(cardId)
     setCardSeted(id)
   }
+
+
+
+
+  const [dataRevenues, setDataRevenues] = useState([])
+  const [dataExpenditures, setDataExpenditures] = useState([])
+
+
   return (
     <Grid>
-      <Row1 userData={userData} setUserData={setUserData} handleCardSelect={handleCardSelect} handleCardSelectSee={handleCardSelectSee}/>
-      <Row2 userData={userData} seeCardSelected={seeCardSelected} cardSelected={cardSelected}/>
-      <Row3 userData={userData} seeCardSelected={seeCardSelected} cardSelected={cardSelected}/>
+      <Row1 userData={userData} setUserData={setUserData} handleCardSelect={handleCardSelect} handleCardSelectSee={handleCardSelectSee} dataRevenues={dataRevenues} dataExpenditures={dataExpenditures}/>
+      <Row2 userData={userData} seeCardSelected={seeCardSelected} cardSelected={cardSelected} setDataCounter={setDataRevenues} dataCounter={dataRevenues}/>
+      <Row3 userData={userData} seeCardSelected={seeCardSelected} cardSelected={cardSelected} setDataCounter={setDataExpenditures} dataCounter={dataExpenditures}/>
     </Grid>
   )
 }

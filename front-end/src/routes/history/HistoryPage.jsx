@@ -2,9 +2,6 @@ import React from 'react'
 import HistoryComponent from './historyComponent/HistoryComponent'
 
 export default function HistoryPage() {
-   
-    
-
     return (
         <main className='grid grid-rows-3 grid-cols-1 gap-20'>
             <div className='w-full h-full flex justify-between items-center flex-col gap-5'>
@@ -16,7 +13,7 @@ export default function HistoryPage() {
                     </figure>
                 </div>
             </div>
-            <HistoryComponent />
+            <HistoryComponent/>
         </main>
     )
 }

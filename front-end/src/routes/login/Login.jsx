@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import LoaderRegister from '../../components/loaders/LoaderRegister'
 import ErrorRegistration from '../../components/errors/ErrorRegistration'
+import sanitizeHtml from 'sanitize-html';
 
 export default function Login({ onLogin }) {
   const navigate = useNavigate()
@@ -26,21 +27,46 @@ export default function Login({ onLogin }) {
   }
 
   const [errorMessage, setErrorMessage] = useState('')
+
+  const sanitizeFormData = (data) => {
+    const sanitizedData = {};
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        let sanitizedValue = sanitizeHtml(data[key], {
+          allowedTags: [], 
+          allowedAttributes: {} 
+        });
+
+        if (typeof sanitizedValue !== 'string') {
+          sanitizedValue = String(sanitizedValue);
+        }
+
+        sanitizedData[key] = sanitizedValue;
+      }
+    }
+    return sanitizedData;
+  }
+
   const loginRequest = async () => {
     changeLoader()
     try {
+      const sanitizedData = sanitizeFormData(formData);
       const request = await fetch(`${process.env.REACT_APP_ENDPOINT_BACKEND}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(sanitizedData)
       })
       if (request.ok) {
         const { token } = await request.json()
         navigate(`/profile/${token}`)
         onLogin(token)
         changeLoader()
+      } else {
+        setErrorMessage('Invalid email or password')
+        setLoader(false)
+        changeError()
       }
     } catch (error) {
       console.log(error.message);
@@ -49,6 +75,7 @@ export default function Login({ onLogin }) {
       changeError()
     }
   }
+
   return (
     <>
       {!loader && !error && (
@@ -81,3 +108,4 @@ export default function Login({ onLogin }) {
     </>
   )
 }
+

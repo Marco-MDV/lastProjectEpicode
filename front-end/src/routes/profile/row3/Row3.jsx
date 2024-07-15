@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import ChartLine from '../../../components/chartLine/ChartLine'
 import Additions from '../../../components/additions/Additions '
 
-export default function Row3({ userData, cardSelected, seeCardSelected }) {
+export default function Row3({ userData, cardSelected, seeCardSelected, setDataCounter, dataCounter }) {
   const [dataChart, setDataChart] = useState({exitsDates:[], exitsValue:[]})
   const hookSetDataChart = (e) => {
     setDataChart(e)
@@ -48,14 +48,15 @@ export default function Row3({ userData, cardSelected, seeCardSelected }) {
             text='exits'
             dataChart={dataChart}
             hookSetDataChart={hookSetDataChart}
+            setDataCounter={setDataCounter}
           />
           <Additions
             userData={userData}
             seeCardSelected={seeCardSelected}
             cardSelected={cardSelected}
             value='expenditure'
-            dataChart={dataChart}
-            hookSetDataChart={hookSetDataChart}
+            setDataCounter={setDataCounter}
+            dataCounter={dataCounter}
             addNewData={addNewData}
           />
         </>
